@@ -68,6 +68,19 @@ function App() {
     e.preventDefault();
     if (attempts <= 0) return;
 
+    // Validate prompt length
+    const trimmedPrompt = prompt.trim();
+    if (trimmedPrompt.length < 3 || trimmedPrompt.length > 765) {
+      setMessages(prev => [
+        ...prev,
+        {
+          type: 'bot',
+          text: `Prompt must be between 3 and 765 characters. You entered ${trimmedPrompt.length} characters.`,
+        },
+      ]);
+      return;
+    }
+
     setMessages(prev => [...prev, { type: 'user', text: prompt }]);
     const currentPrompt = prompt;
     setPrompt('');
@@ -87,11 +100,21 @@ function App() {
       const newAttempts = attempts - 1;
       setAttempts(newAttempts);
       localStorage.setItem('attempts', newAttempts.toString());
-    } catch (err) {
-      console.error('Image generation failed', err);
+    } catch (err: any) {
+      console.error('Image generation failed:', err);
+
+      let fallbackMessage = '⚠️ Image generation failed. Please try again later.'; 
+
+      // Check for backend queue info or timeout
+      if (err.code === 'ECONNABORTED') {
+        fallbackMessage = '⏳ Request timed out. Your request may be in a queue. Please wait or try again shortly.';
+      } else if (err.response?.data?.queuePosition !== undefined) {
+        fallbackMessage = `⏳ Your request is in queue. Current position: #${err.response.data.queuePosition}`;
+      }
+
       setMessages(prev =>
         prev.map(msg =>
-          msg.id === loadingId ? { type: 'bot', text: 'Image generation failed. Try again.' } : msg
+          msg.id === loadingId ? { type: 'bot', text: fallbackMessage } : msg
         )
       );
     } finally {
@@ -168,7 +191,7 @@ function App() {
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
             className="flex-grow px-4 py-2 rounded-l-lg bg-gray-700 text-white focus:outline-none"
-            placeholder="Describe your image... (this is a minimum accuracy model)"
+            placeholder="Describe your image..."
             disabled={loading || !user}  // Disable if not logged in
             required
           />
