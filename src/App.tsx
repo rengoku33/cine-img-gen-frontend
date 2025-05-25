@@ -77,7 +77,7 @@ function App() {
     setMessages(prev => [...prev, { id: loadingId, type: 'bot', isLoading: true }]);
 
     try {
-      const res = await axios.post('http://localhost:5000/api/generate', { prompt: currentPrompt });
+      const res = await axios.post('https://imagify-backend2.vercel.app/api/generate', { prompt: currentPrompt });
       const imageUrl = res.data.images;
 
       setMessages(prev =>
@@ -207,3 +207,4 @@ function TypingDots() {
 }
 
 export default App;
+// npm start
