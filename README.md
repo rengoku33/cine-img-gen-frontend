@@ -20,3 +20,12 @@ This is the frontend code, you need to separately install backend from here: htt
    ```bash
    npm start
    ```
+## project screenshots
+![Screenshot 2025-05-25 213819](https://github.com/user-attachments/assets/6573c9b7-7e7b-475e-9880-fc4ebc5083e7)
+
+![Screenshot 2025-05-26 000606](https://github.com/user-attachments/assets/8f8ec273-cb10-4d81-ba1c-15e90c1cc10a)
+
+## Notes:
+* The image generations might not be precise due to the approach I am following to achieve extended free version
+* if you run out of attempts, simply logout and login
+* no user data is collected, there is no database at all from my side
